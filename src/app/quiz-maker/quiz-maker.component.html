@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-sm-11">
+    <ng-container *ngIf="categories$ | async as mainCategories">
+      <select
+        *ngIf="mainCategories.length"
+        [formControl]="mainCategoriesDropdown"
+      >
+        <option value="0">Select Category</option>
+        <option [ngValue]="category.id" *ngFor="let category of mainCategories">
+          {{ category.name }}
+        </option>
+      </select>
+    </ng-container>
+
+    <ng-container *ngIf="subCategories$ | async as subCategories">
+      <select
+        [formControl]="subCategoriesDropdown"
+        *ngIf="subCategories.length"
+      >
+        <option [ngValue]="category.id" *ngFor="let category of subCategories">
+          {{ category.name }}
+        </option>
+      </select>
+    </ng-container>
+
+    <select #difficulty id="difficultySelect">
+      <option>Select difficulty</option>
+      <option>Easy</option>
+      <option>Medium</option>
+      <option>Hard</option>
+    </select>
+    <button
+      class="primary"
+      id="createBtn"
+      (click)="createQuiz(difficulty.value)"
+    >
+      Create
+    </button>
+  </div>
+</div>
+<div class="row">
+  <app-quiz [questions]="questions$ | async"></app-quiz>
+</div>
