@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { filter, last, map, Observable, tap } from 'rxjs';
+import { filter, last, map, Observable, shareReplay, tap } from 'rxjs';
 import {
   Category,
   Difficulty,
@@ -11,26 +11,31 @@ import {
 } from './data.models';
 import { UtilitiesService } from './utilities.service';
 
+const CACHE_SIZE = 1;
+
 @Injectable({
   providedIn: 'root',
 })
 export class QuizService {
   private API_URL = 'https://opentdb.com/';
   private latestResults!: Results;
-  private categories$: Observable<Category[]>;
   private readonly pattern: string = ':';
+  // we implement a cache menism to fetch categories once
+  private _cache$: Observable<Category[]>;
 
   constructor(
     private http: HttpClient,
     private utilitiesService: UtilitiesService
-  ) {
-    this.categories$ = this.http
-      .get<{ trivia_categories: Category[] }>(this.API_URL + 'api_category.php')
-      .pipe(map((res) => res.trivia_categories));
-  }
+  ) {}
 
-  getAllCategories(): Observable<Category[]> {
-    return this.categories$.pipe(
+  getCategories(): Observable<Category[]> {
+    // If no cache available we fetch the data via http request and create the cache.
+    // This will trigger http request only once thanks to shareReplay operator
+    if (!this._cache$) {
+      this._cache$ = this.requestCategories().pipe(shareReplay(CACHE_SIZE));
+    }
+
+    return this._cache$.pipe(
       map((categories: Category[]) => this.getUniqueCategories(categories))
     );
   }
@@ -46,9 +51,7 @@ export class QuizService {
   getSubCategoryForCategory(
     selectedCategoryId: number
   ): Observable<Category[]> {
-    return this.categories$.pipe(
-      // Get the last value of all categories observable
-      last(),
+    return this._cache$.pipe(
       // Filter with only categories starting with the same name as the selected main category
       map((categories: Category[]) =>
         this.getCategoriesStartingWithSelectedCategory(
@@ -94,6 +97,12 @@ export class QuizService {
 
   getLatestResults(): Results {
     return this.latestResults;
+  }
+
+  private requestCategories() {
+    return this.http
+      .get<{ trivia_categories: Category[] }>(this.API_URL + 'api_category.php')
+      .pipe(map((res) => res.trivia_categories));
   }
 
   /**

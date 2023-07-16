@@ -17,7 +17,7 @@ export class QuizMakerComponent {
   subCategoriesDropdown = new FormControl<Category['id']>(0);
 
   constructor(protected quizService: QuizService) {
-    this.categories$ = quizService.getAllCategories();
+    this.categories$ = quizService.getCategories();
     this.subCategories$ = this.mainCategoriesDropdown.valueChanges.pipe(
       // we get the id of the main category
       switchMap(
