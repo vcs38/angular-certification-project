@@ -1,0 +1,25 @@
+<ng-container *ngIf="items$ | async as items">
+  <div class="dropdown" *ngIf="items.length">
+    <input
+      type="text"
+      class="dropdown-input"
+      [formControl]="itemControl"
+      [placeholder]="placeholder"
+    />
+    <input
+      type="reset"
+      value="x"
+      class="dropdown-input-clear-button"
+      alt="Clear the search form"
+      (click)="reset()"
+    />
+    <div class="dropdown-list">
+      <span
+        *ngFor="let item of items | filter : itemControl.value"
+        (click)="itemSelected(item)"
+        [innerHTML]="item.name | matching : itemControl.value"
+      >
+      </span>
+    </div>
+  </div>
+</ng-container>

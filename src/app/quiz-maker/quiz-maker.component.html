@@ -1,27 +1,15 @@
 <div class="row">
   <div class="col-sm-11">
-    <ng-container *ngIf="categories$ | async as mainCategories">
-      <select
-        *ngIf="mainCategories.length"
-        [formControl]="mainCategoriesDropdown"
-      >
-        <option value="0">Select Category</option>
-        <option [ngValue]="category.id" *ngFor="let category of mainCategories">
-          {{ category.name }}
-        </option>
-      </select>
-    </ng-container>
-
-    <ng-container *ngIf="subCategories$ | async as subCategories">
-      <select
-        [formControl]="subCategoriesDropdown"
-        *ngIf="subCategories.length"
-      >
-        <option [ngValue]="category.id" *ngFor="let category of subCategories">
-          {{ category.name }}
-        </option>
-      </select>
-    </ng-container>
+    <app-auto-filter-dropdown
+      [items$]="categories$"
+      placeholder="Select a category"
+      (itemChange)="mainCategoryChanged($event)"
+    ></app-auto-filter-dropdown>
+    <app-auto-filter-dropdown
+      [items$]="subCategories$"
+      placeholder="Select a sub category"
+      [(item)]="subCategory"
+    ></app-auto-filter-dropdown>
 
     <select #difficulty id="difficultySelect">
       <option>Select difficulty</option>

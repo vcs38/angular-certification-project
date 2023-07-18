@@ -9,6 +9,9 @@ import { QuizMakerComponent } from './quiz-maker/quiz-maker.component';
 import { QuizComponent } from './quiz/quiz.component';
 import { QuestionComponent } from './question/question.component';
 import { AnswersComponent } from './answers/answers.component';
+import { AutoFilterDropdownComponent } from './auto-filter-dropdown/auto-filter-dropdown.component';
+import { MatchingPipe } from './pipes/matching.pipe';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -17,6 +20,9 @@ import { AnswersComponent } from './answers/answers.component';
     QuizComponent,
     QuestionComponent,
     AnswersComponent,
+    AutoFilterDropdownComponent,
+    MatchingPipe,
+    FilterPipe,
   ],
   imports: [
     BrowserModule,

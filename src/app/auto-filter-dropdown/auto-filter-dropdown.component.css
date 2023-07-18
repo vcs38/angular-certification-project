@@ -1,0 +1,33 @@
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-input {
+  background-color: #fff;
+  margin-right: 0;
+}
+
+.dropdown-input-clear-button {
+  margin-left: 0;
+}
+
+.dropdown-list {
+  display: none;
+  position: absolute;
+  min-width: 200px;
+  box-shadow: 0px 8px 10px rgba(0,0,0,0.5);
+  z-index: 1;
+}
+
+.dropdown-list span {
+  padding: 12px 12px;
+  display: block;
+  background-color: #fff;
+}
+
+.dropdown-input:focus + .dropdown-list, .dropdown:hover .dropdown-list {
+  display: block;
+}
+
+.dropdown-list span:hover {background-color: #eee}

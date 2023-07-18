@@ -31,3 +31,8 @@ export enum Parts {
   FISRT = 0,
   LAST = 1,
 }
+
+export interface GenericItem {
+  id: number;
+  name: string;
+}

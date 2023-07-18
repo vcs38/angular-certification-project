@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { filter, last, map, Observable, shareReplay, tap } from 'rxjs';
+import { map, Observable, shareReplay, tap } from 'rxjs';
 import {
   Category,
   Difficulty,
@@ -60,7 +60,19 @@ export class QuizService {
         )
       ),
       // Rename subcategories by removing the first part of the name (the main catgory)
-      map((categories) => this.getSecondPartOfCategoriesName(categories))
+      map((categories: Category[]) =>
+        this.getSecondPartOfCategoriesName(categories)
+      )
+    );
+  }
+
+  getFirstSubCategoryForCategory(
+    selectedCategoryId: number
+  ): Observable<Category | null> {
+    return this.getSubCategoryForCategory(selectedCategoryId).pipe(
+      map((categories: Category[]) => {
+        return categories.length ? categories[0] : null;
+      })
     );
   }
 
@@ -117,7 +129,7 @@ export class QuizService {
     return (
       categories
         // Rename all categories by removing ': xxxx'
-        .map((category) => ({
+        .map((category: Category) => ({
           ...category,
           name: this.utilitiesService.splitStringWithPatternAndGetPart(
             category.name,
@@ -150,13 +162,13 @@ export class QuizService {
   ): Category[] {
     // Get the selected main category
     const category: Category | undefined = categories.find(
-      (c) => c.id === selectedCategoryId
+      (c: Category) => c.id === selectedCategoryId
     );
     // If the main category was found, we filter with categories starting with the same name as the selected main catgory
     // If the main category was not found, we return an empty array
     return category
       ? categories.filter(
-          (c) =>
+          (c: Category) =>
             c.name.startsWith(
               this.utilitiesService.splitStringWithPatternAndGetPart(
                 category.name,
@@ -178,7 +190,7 @@ export class QuizService {
    */
   private getSecondPartOfCategoriesName(categories: Category[]): Category[] {
     // We rename the category by removing the main category 'xxx: '
-    return categories.map((c) => ({
+    return categories.map((c: Category) => ({
       ...c,
       name: this.utilitiesService.splitStringWithPatternAndGetPart(
         c.name,

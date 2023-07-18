@@ -21,11 +21,15 @@ export class UtilitiesService {
     patternToSplit: string
   ): string {
     const splittedString = s.split(patternToSplit);
+    let result: string;
     switch (part) {
       case Parts.FISRT:
-        return splittedString[0];
+        result = splittedString[0];
+        break;
       case Parts.LAST:
-        return splittedString.length > 0 ? splittedString[1] : '';
+        result = splittedString.length > 0 ? splittedString[1] : '';
+        break;
     }
+    return result.trim();
   }
 }
