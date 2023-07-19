@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, shareReplay, tap } from 'rxjs';
+import { map, Observable, shareReplay, switchMap, tap } from 'rxjs';
 import {
   Category,
   Difficulty,
@@ -78,13 +78,14 @@ export class QuizService {
 
   createQuiz(
     categoryId: string,
-    difficulty: Difficulty
+    difficulty: Difficulty,
+    amount: number = 5
   ): Observable<Question[]> {
     return this.http
       .get<{ results: ApiQuestion[] }>(
         `${
           this.API_URL
-        }/api.php?amount=5&category=${categoryId}&difficulty=${difficulty.toLowerCase()}&type=multiple`
+        }/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty.toLowerCase()}&type=multiple`
       )
       .pipe(
         map((res) => {
@@ -97,6 +98,19 @@ export class QuizService {
           return quiz;
         })
       );
+  }
+
+  getSingleQuestion(
+    categoryName: string,
+    difficulty: Difficulty
+  ): Observable<Question> {
+    return this.getCategoryIdByName(categoryName).pipe(
+      switchMap((categoryId: number) =>
+        this.createQuiz(categoryId.toString(), difficulty, 1).pipe(
+          map((questions: Question[]) => questions[0])
+        )
+      )
+    );
   }
 
   computeScore(questions: Question[], answers: string[]): void {
@@ -198,5 +212,24 @@ export class QuizService {
         this.pattern
       ),
     }));
+  }
+
+  /**
+   * Returns categoryId
+   *
+   *
+   * @param categoryName - Name of category to find
+   * @returns The categoryId
+   *
+   */
+  private getCategoryIdByName(categoryName: string): Observable<number> {
+    return this._cache$.pipe(
+      map(
+        (categories: Category[]) =>
+          categories.find(
+            (category: Category) => category.name === categoryName
+          ).id
+      )
+    );
   }
 }

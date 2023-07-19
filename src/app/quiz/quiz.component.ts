@@ -1,15 +1,14 @@
-import {Component, inject, Input} from '@angular/core';
-import {Question} from '../data.models';
-import {QuizService} from '../quiz.service';
-import {Router} from '@angular/router';
+import { Component, inject, Input } from '@angular/core';
+import { Question } from '../data.models';
+import { QuizService } from '../quiz.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-quiz',
   templateUrl: './quiz.component.html',
-  styleUrls: ['./quiz.component.css']
+  styleUrls: ['./quiz.component.css'],
 })
 export class QuizComponent {
-
   @Input()
   questions: Question[] | null = [];
 
@@ -19,7 +18,10 @@ export class QuizComponent {
 
   submit(): void {
     this.quizService.computeScore(this.questions ?? [], this.userAnswers);
-    this.router.navigateByUrl("/result");
+    this.router.navigateByUrl('/result');
   }
 
+  trackBy(index: number, item: Question): string {
+    return item.question;
+  }
 }

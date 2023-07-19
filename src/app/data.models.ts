@@ -17,6 +17,8 @@ export interface Question {
   correct_answer: string;
   incorrect_answers: string[];
   all_answers: string[];
+  category: string;
+  difficulty: string;
 }
 
 export interface Results {

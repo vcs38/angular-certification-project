@@ -8,6 +8,7 @@ export class MatchingPipe implements PipeTransform {
     const indices: number[] = this.getIndicesOf(search, value);
     let transformed: string = '';
     let startIndex: number = 0;
+
     indices.forEach((index) => {
       const next: number = index + search.length;
       transformed += value.substring(startIndex, index);
